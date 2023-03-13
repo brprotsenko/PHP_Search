@@ -1,6 +1,14 @@
 <?php
-// !!! TODO 1: ваш код обработки GET запроса; выполнения запроса через
-//cURL в поисковую систему; подготовка данных для отрисовки
+$search = "";
+$apiKey = "AIzaSyD7QeoBQISjp5PLFQZj852TUlrPbR_VkiI";
+$cx = "e09a44ebefbdd430e";
+if(!empty(htmlspecialchars($_GET["search"]))){
+    $search = htmlspecialchars($_GET["search"]);
+}
+$url = "https://www.googleapis.com/customsearch/v1?key=$apiKey&cx=$cx&q=$search";
+$json = file_get_contents($url);
+$data = json_decode($json,true);
+$items = $data["items"];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +24,21 @@
     <input type="submit" value="Submit">
 </form>
 <?php
-// !!! TODO 2: ваш код отрисовки ответа
+echo "<div style='font-size:25px; font-weight: bold;margin-top: 10px'>Search result</div>";
+foreach ($data["items"] as $item) {
+    ?>
+    <div class="item">
+        <hr>
+        <p class="link"><?php echo $item["displayLink"] ?></p>
+        <p class="title">
+            <a target="_blank" href="<?php echo $item["link"] ?>">
+                <?php echo $item["title"] ?>
+            </a>
+        </p>
+        <p class="desc"><?php echo $item["snippet"] ?></p>
+    </div>
+    <?php
+}
 ?>
 </body>
 </html>
